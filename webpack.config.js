@@ -1,28 +1,57 @@
 const path = require("path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
+const HTMLWebpackPlugin = require("html-webpack-plugin");
+const BundleAnalyzerPlugin =
+  require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 
 module.exports = {
   mode: "development",
   entry: {
-    index: "./src/index.js",
-    print: "./src/print.js",
+    bundle: path.resolve(__dirname, "src/index.js"),
   },
-  devtool: "inline-source-map",
+  output: {
+    path: path.resolve(__dirname, "dist"),
+    filename: "[name].[contenthash].js",
+    clean: true,
+    assetModuleFilename: "[name][ext]",
+  },
+  devtool: "source-map",
   devServer: {
-    static: "./dist",
+    static: {
+      directory: path.resolve(__dirname, "dist"),
+    },
+    port: 3000,
+    hot: true,
+    compress: true,
+    historyApiFallback: true,
+  },
+  module: {
+    rules: [
+      {
+        test: /\.scss$/,
+        use: ["style-loader", "css-loader", "sass-loader"],
+      },
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: "babel-loader",
+          options: {
+            presets: ["@babel/preset-env"],
+          },
+        },
+      },
+      {
+        test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        type: "asset/resource",
+      },
+    ],
   },
   plugins: [
-    new HtmlWebpackPlugin({
-      title: "Development",
+    new HTMLWebpackPlugin({
+      title: "Webpack App",
+      filename: "index.html",
+      template: "src/template.html",
     }),
+    new BundleAnalyzerPlugin(),
   ],
-  output: {
-    filename: "[name].bundle.js",
-    path: path.resolve(__dirname, "dist"),
-    clean: true,
-    publicPath: '/',
-  },
-  optimization: {
-    runtimeChunk: "single",
-  },
 };

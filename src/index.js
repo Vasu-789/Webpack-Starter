@@ -1,21 +1,11 @@
-import _ from "lodash";
+import generateJoke from "./generateJoke";
+import "./styles/main.scss";
+import laughing from "./assets/laughing.svg";
 
-import printMe from "./print.js";
+const laughImg = document.getElementById("laughImg");
+laughImg.src = laughing;
 
-function component() {
-  const element = document.createElement("div");
+const jokeBtn = document.getElementById("jokeBtn");
+jokeBtn.addEventListener("click", generateJoke);
 
-  const btn = document.createElement("button");
-
-  element.innerHTML = _.join(["Hello", "webpack"], " ");
-
-  btn.innerHTML = "Click me and check the console!";
-
-  btn.onclick = printMe;
-
-  element.appendChild(btn);
-
-  return element;
-}
-
-document.body.appendChild(component());
+generateJoke();
